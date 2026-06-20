@@ -176,7 +176,10 @@ python toolkit/build_short.py                                  # data-render dem
 - **Don't commit large media** (recordings, exports, replays) — see `.gitignore`.
   Raw captures are large (~minutes of 1440p); delete `editor/work/` and old
   recordings when done.
-- **No git repo yet** — don't run git operations unless the user asks.
+- **Git:** repo at **github.com/ailingloran/shorts-project** (`origin`/`main`, public; `gh`
+  authed as ailingloran). The user wants it kept current — **commit + push after each
+  built+verified feature**. `.gitignore` keeps media/`work_*`/`*_list.txt` out; never commit
+  large media. End commit messages with the `Co-Authored-By: Claude Opus 4.8` trailer.
 
 ## Memory
 
