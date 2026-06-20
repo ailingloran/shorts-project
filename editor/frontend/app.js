@@ -189,16 +189,23 @@ $("scrubber").onclick = (e) => {
 window.addEventListener("resize", renderScrubber);
 
 $("addseg").onclick = () => {
-  if (!currentSource) return alert("Pick a source first.");
-  if (pendingIn == null || pendingOut == null || pendingOut <= pendingIn)
-    return alert("Set IN then OUT (OUT must be after IN).");
+  if (!currentSource) return alert("Pick a source on the left first.");
+  const dur = srcDur();
+  let inS = pendingIn, outS = pendingOut;
+  // Forgiving: fill in whatever wasn't marked, so "Add" always makes a clip.
+  if (inS == null && outS == null) { inS = video.currentTime; outS = Math.min(dur, inS + 10); }
+  else if (outS == null) { outS = video.currentTime; }
+  else if (inS == null) { inS = outS; outS = video.currentTime; }
+  if (outS <= inS) outS = Math.min(dur, inS + 10);          // ensure positive length
+  if (outS - inS < 0.3) return alert("Scrub forward a bit before adding — the clip is too short.");
   const ps = ensureProjectSource(currentSource);
   project.segments.push({
     id: "seg" + Date.now(), source_id: ps.id,
-    in_s: +pendingIn.toFixed(2), out_s: +pendingOut.toFixed(2), speed: 1.0,
+    in_s: +inS.toFixed(2), out_s: +outS.toFixed(2), speed: 1.0,
     reframe: currentReframe(),
   });
   pendingIn = pendingOut = null; updateInOut(); renderTimeline(); renderScrubber();
+  setStatus(`added clip ${inS.toFixed(1)}s → ${outS.toFixed(1)}s`);
 };
 
 function renderTimeline() {
