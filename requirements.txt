@@ -1,0 +1,26 @@
+# WoWS Shorts — consolidated dependencies (Python 3.14, Windows)
+# Install:  python -m pip install -r requirements.txt
+# (replay_unpack is a git install; the rest are PyPI.)
+
+# --- editor app (backend) ---
+fastapi
+uvicorn[standard]
+pydantic
+
+# --- media (used by toolkit + editor) ---
+imageio-ffmpeg          # bundles a static ffmpeg 7.1 binary; no system ffmpeg needed
+Pillow
+
+# --- toolkit: replay decode (replay_unpack + its undeclared deps) ---
+replay_unpack @ git+https://github.com/Monstrofil/replays_unpack.git
+lxml                    # entity-definition XML parsing
+packaging               # version comparison inside replay_unpack
+pycryptodomex           # Blowfish decrypt of the replay packet stream
+
+# --- optional ---
+anthropic               # Claude-written hook/title/caption copy (card.py)
+# faster-whisper        # subtitles ASR (editor Phase C) — enable when needed
+
+# --- future (editor OBS capture layer, not yet built) ---
+# obsws-python          # drive OBS recording over its WebSocket
+# keyboard              # global hotkeys: F9 "battle started", F8 "mark moment"

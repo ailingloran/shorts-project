@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WoWS Shorts Editor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">⚓ WoWS Shorts Editor <span class="tag">Phase A</span></div>
+    <input id="title" class="title" value="Untitled short" />
+    <div class="spacer"></div>
+    <button id="save">Save</button>
+    <button id="export" class="primary">Export ▶</button>
+    <span id="status" class="status"></span>
+  </header>
+
+  <main>
+    <aside class="left">
+      <h3>Capture (OBS)</h3>
+      <div class="panel">
+        <input id="obspass" type="password" placeholder="OBS WebSocket password (if set)" />
+        <button id="obsconnect" style="margin-top:6px;">Connect OBS</button>
+        <div id="obsstatus" class="hint">not connected</div>
+        <div id="obscontrols" style="display:none; margin-top:8px;">
+          <button id="obsstart" class="primary">● Record</button>
+          <button id="obsstop">■ Stop &amp; load</button>
+          <div style="margin-top:6px;">
+            <button id="obsbattle">⚓ Battle start (F9)</button>
+            <button id="obsmark">★ Mark (F8)</button>
+          </div>
+          <div id="obsrec" class="hint"></div>
+        </div>
+      </div>
+      <p class="hint">Launch the replay in WoWS yourself, then Record. Battle-start sets
+        the counter sync automatically.</p>
+
+      <h3>Sources</h3>
+      <div id="sources" class="list"></div>
+      <p class="hint">…or drop recordings into <code>editor/sources/</code>.</p>
+    </aside>
+
+    <section class="center">
+      <div class="stage">
+        <div id="vidwrap" class="vidwrap">
+          <video id="preview" preload="auto"></video>
+          <div id="crop" class="crop" title="drag to pan the 9:16 frame"></div>
+        </div>
+      </div>
+      <div id="scrubber" class="scrubber" title="click to seek · gold ticks = kills"></div>
+      <div class="transport">
+        <button id="play">⏯</button>
+        <span id="time" class="time">0.00 / 0.00</span>
+        <button id="setin">Set IN</button>
+        <span id="inout" class="inout">in — · out —</span>
+        <button id="setout">Set OUT</button>
+        <button id="addseg" class="primary">+ Add segment</button>
+        <button id="kfadd" title="capture the crop-box position at the playhead for the selected segment">◇ Reframe key</button>
+      </div>
+    </section>
+
+    <aside class="right">
+      <h3>Audio</h3>
+      <div id="audio" class="panel"></div>
+      <h3>Music bed</h3>
+      <div class="panel">
+        <input id="musicpath" placeholder="path to music file (optional)" />
+        <label>gain <input id="musicgain" type="range" min="-30" max="0" value="-8" /> <span id="musicgainv">-8 dB</span></label>
+        <label><input type="checkbox" id="musicduck" /> Duck under gameplay/voice</label>
+      </div>
+      <h3>Counters (replay data)</h3>
+      <div class="panel">
+        <select id="replaysel"><option value="">— select a replay —</option></select>
+        <button id="attachreplay">Attach to source</button>
+        <div id="replayinfo" class="hint">no replay attached</div>
+        <label><input type="checkbox" id="ctrfrags" /> Frags counter (bottom-left)</label>
+        <label><input type="checkbox" id="ctrdmg" /> Damage counter (bottom-right)</label>
+        <label>battle offset
+          <button id="offminus">−2s</button>
+          <input id="offset" type="number" step="0.5" value="0" style="width:74px" /> s
+          <button id="offplus">+2s</button>
+        </label>
+        <div class="hint">offset syncs counters to on-screen kills (battle_t = clip_t + offset)</div>
+        <button id="suggest" class="primary" style="margin-top:10px">✨ Auto-suggest segments</button>
+        <div id="killchips" class="killchips"></div>
+      </div>
+
+      <h3>Effects (on kills)</h3>
+      <div class="panel">
+        <label><input type="checkbox" id="fxflash" /> Flash on kills</label>
+        <label><input type="checkbox" id="fxzoom" /> Zoom punch on kills</label>
+        <label>zoom amount <input id="fxamt" type="number" step="0.05" value="1.15" style="width:64px" /></label>
+        <div class="hint">needs a replay attached (uses its kill times)</div>
+      </div>
+
+      <h3>Transitions</h3>
+      <div class="panel">
+        <label>between clips
+          <select id="trtype">
+            <option value="none">hard cut</option>
+            <option value="fade">crossfade</option>
+            <option value="fadeblack">fade through black</option>
+            <option value="dissolve">dissolve</option>
+            <option value="wipeleft">wipe</option>
+            <option value="slideleft">slide</option>
+          </select>
+        </label>
+        <label>duration <input id="trdur" type="number" step="0.1" value="0.4" style="width:64px" /> s</label>
+      </div>
+
+      <h3>Subtitles</h3>
+      <div class="panel">
+        <input id="subtext" placeholder="caption text" />
+        <label>in <input id="subin" type="number" step="0.1" value="0" style="width:64px" /> s
+          · out <input id="subout" type="number" step="0.1" value="2.5" style="width:64px" /> s</label>
+        <button id="subadd">+ Add caption</button>
+        <div id="sublist" class="hint">no captions</div>
+        <div class="hint">times are seconds into the gameplay (after intro)</div>
+      </div>
+
+      <h3>Intro / Outro</h3>
+      <div class="panel">
+        <label><input type="checkbox" id="introon" /> Intro</label>
+        <input id="introtext" placeholder="intro big line (e.g. 135K DAMAGE)" />
+        <label><input type="checkbox" id="outroon" /> Outro</label>
+        <input id="outrotext" placeholder="outro line (e.g. WORLD OF WARSHIPS)" />
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <h3>Timeline <span class="hint">click a segment to edit its frame · drag in preview to pan</span></h3>
+    <div id="timeline" class="timeline"></div>
+  </footer>
+
+  <script src="app.js?v=2"></script>
+</body>
+</html>

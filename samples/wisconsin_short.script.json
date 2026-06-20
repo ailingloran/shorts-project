@@ -1,0 +1,23 @@
+{
+  "video_file": "wisconsin_short.mp4",
+  "duration_s": 20,
+  "format": "1080x1920 vertical / TikTok-YT Shorts",
+  "source": "real in-game capture (replay played back in 15.5 client, screen-recorded)",
+  "hook": "I did 135K damage and still lost 😤",
+  "title": "135K Damage, Still a Defeat — Wisconsin",
+  "caption": "Sometimes you do everything right and the team still finds a way to lose it. 135K on the Wisconsin at golden hour. We've all been there. 🫡 #WorldOfWarships",
+  "hashtags": ["#WorldOfWarships", "#WoWs", "#Wisconsin", "#Warships", "#Gaming", "#Shorts", "#NavalCombat"],
+  "pov_player": "bloodminister",
+  "ship": "Wisconsin (PASB940 250TH)",
+  "map": "AngelWings",
+  "mode": "Arms Race",
+  "version": "15.5",
+  "result": "Defeat",
+  "damage": 134968,
+  "beats": [
+    {"label": "sunset salvo", "battle_time_s": "369-377"},
+    {"label": "golden-hour engagement", "battle_time_s": "481-490"}
+  ],
+  "structure": ["intro hook card 1.6s", "beat1 8s", "beat2 9s", "outro card 2.2s"],
+  "note": "Music intentionally omitted (add a licensed track in your editor). Beats chosen to avoid the death/camera fade at ~492s."
+}

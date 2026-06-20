@@ -1,0 +1,12 @@
+# Phase 1 discovery layer.
+# Core (parse_header, events, scorer, card-template, run_discovery): STDLIB ONLY.
+
+# Real packet-stream decoding (decode_replay.py, batch_scan.py).
+# replay_unpack ships WoWS entity definitions up to v15.4 (see README re: lag).
+replay_unpack @ git+https://github.com/Monstrofil/replays_unpack.git
+lxml>=5.0            # entity-definition XML parsing
+packaging>=23.0      # version comparison in the player
+pycryptodomex>=3.20  # Blowfish decrypt of the packet stream
+
+# Optional: Claude-written copy instead of the template (card.py --claude)
+anthropic>=0.40.0

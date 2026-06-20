@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Editor runtime data (large / user-specific / generated)
+editor/sources/*
+!editor/sources/.gitkeep
+editor/output/*
+!editor/output/.gitkeep
+editor/work/*
+!editor/work/.gitkeep
+editor/projects/*.json
+*.log
+
+# Replays & big media artifacts
+*.wowsreplay
+samples/*.mp4
+
+# OS
+Thumbs.db
+.DS_Store
+
+# CLI exporter leftovers
+*_list.txt
+editor/projects/work_*/
