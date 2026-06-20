@@ -388,6 +388,12 @@ $("save").onclick = async () => { syncCards(); buildCounters(); syncTransition()
 $("export").onclick = async () => {
   if (!project.segments.length) return alert("Add at least one segment.");
   syncCards(); buildCounters(); syncTransition(); syncEffects();
+  const needsReplay = project.overlays.counters.length || project.effects.flash_on_kills || project.effects.zoom_on_kills;
+  const hasReplay = project.sources.some((s) => s.replay_path);
+  if (needsReplay && !hasReplay &&
+      !confirm("Counters and flash/zoom-on-kills need replay data.\n\nAttach a replay first: Counters panel → pick the replay → Attach to source.\n\nExport anyway without them?")) {
+    return;
+  }
   setStatus("exporting…");
   await api("/api/export/" + project.project_id, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(project) });
   const poll = setInterval(async () => {

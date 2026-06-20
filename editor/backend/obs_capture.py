@@ -86,10 +86,28 @@ class CaptureManager:
     def start(self) -> dict:
         if not self.connected:
             return {"ok": False, "error": "not connected"}
+        # If OBS is already recording (manually, or a prior attempt), adopt it
+        # instead of failing on a second StartRecord.
+        try:
+            rs = self.client.get_record_status()
+            if getattr(rs, "output_active", False):
+                self.record_start = time.monotonic()
+                self.battle_start = None
+                self.markers = []
+                self._register_hotkeys()
+                return {"ok": True, "note": "OBS was already recording — using that recording"}
+        except Exception:
+            pass
         try:
             self.client.start_record()
         except Exception as e:
-            return {"ok": False, "error": str(e)}
+            comment = getattr(e, "comment", None)
+            return {"ok": False, "error": str(e),
+                    "code": getattr(e, "code", None), "comment": comment,
+                    "hint": "In OBS check: Settings → Output → Recording has a valid "
+                            "Recording Path + encoder, a scene/source exists, and OBS "
+                            "isn't already recording. Try clicking Start Recording in "
+                            "OBS once manually — if that fails too, it's an OBS config issue."}
         self.record_start = time.monotonic()
         self.battle_start = None
         self.markers = []
@@ -99,13 +117,19 @@ class CaptureManager:
     def stop(self) -> dict:
         if not self.connected:
             return {"ok": False, "error": "not connected"}
+        path = None
         try:
             resp = self.client.stop_record()
             path = getattr(resp, "output_path", None)
-        except Exception as e:
-            return {"ok": False, "error": str(e)}
+        except Exception:
+            # OBS may report the output "not running" yet have written the file
+            # (or it was stopped in OBS) — fall back to the newest recording.
+            path = self._newest_recording()
         if not path:
             path = self._newest_recording()
+        if not path:
+            return {"ok": False, "error": "recording stopped but no file was found "
+                    "(check OBS Settings → Output → Recording Path)"}
         self._unregister_hotkeys()
         offset = self.battle_offset()
         markers = list(self.markers)
